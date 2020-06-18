@@ -2936,3 +2936,78 @@ Script_goldenrodmart5f:
 	ld b, a
 	farcall OpenMartDialog
 	ret
+
+	;; 1. the goal here is to randomize pokegear cards alongside key
+	;; items. in other words, an NPC that would `giveitem CARD_KEY`
+	;; should be able to `setflag ENGINE_EXPN_CARD` just as well.
+
+        ;; 2. how can that be implemented? one way would be to define a
+	;; script that can replace `giveitem` and `setflag` in contexts
+	;; where a key item or pokegear card is given.
+
+        ;; 2. what if we didn't define such a script? instead, we might
+	;; have the KIR carefully replace one call with another where
+	;; appropriate. i say 'carefully' because `giveitem` and
+	;; `setflag` do not encode the same number of bytes, the former
+	;; being 3 and the latter being 4.
+
+        ;; let's assume that we can implement a script `giveitem_or_setflag`.
+
+        ;; the Script_giveitem_or_setflag definition needs to live
+        ;; somewhere. right in here alongside the other script
+        ;; definitions is a logical first choice, however, i believe
+        ;; there's no space for more scripts here. according to
+        ;; events.asm (and assuming i've read it correctly),
+        ;; the code here runs right up against the code that follows
+        ;; it.
+
+        ;; TODO: make sure this code is correct, test it, see what
+        ;; else gets shifted around by adding it.
+Script_giveitem_or_setflag:
+; script command 0xaf
+        ;; pseudocode:
+        ;; if arg < 0x04
+        ;;      arg IS ENGINE_{RADIO,MAP,PHONE,EXPN}_CARD
+        ;;      setflag arg
+        ;; else
+        ;;      arg IS a key item
+        ;;      giveitem arg
+        call GetScriptByte
+	cp 4
+
+        ;; GetScriptByte increments ScriptPos, so we need to undo that
+        ;; before jumping to another script that expects to be able
+        ;; to call GetScriptByte itself.
+        push hl
+        push bc
+
+        ld hl, ScriptPos
+        ld c, [hl]
+        inc hl
+	ld b, [hl]
+        dec bc
+	ld [hl], b
+	dec hl
+	ld [hl], c
+
+        pop bc
+        pop hl
+
+        jp c, Script_setflag
+        jp Script_giveitem
+
+        ;; it's pretty trivial to port this script to verbosegiveitem.
+
+        ;; but, how is this gonna work for itemball, which isn't a
+        ;; script at all?
+
+        ;; the itemballs (HM_WATERFALL, COIN_CASE, underground
+	;; ULTRA_BALL that becomes a backup key item) could be
+	;; reimplemented as person_events, but there's also
+        ;; this issue of person_events occupying much more
+        ;; space than an itemball.
+        ;; itemball is 2-byte, and trainer is 7-byte.
+
+        ;; and THEN there's the issue of hiddenitems.
+
+        ;; would it be feasible to hack the signpost code?

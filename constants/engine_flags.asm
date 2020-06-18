@@ -1,11 +1,11 @@
 ; EngineFlags indexes (see data/engine_flags.asm)
 	const_def
 ; wPokegearFlags
-	const ENGINE_RADIO_CARD
-	const ENGINE_MAP_CARD
-	const ENGINE_PHONE_CARD
-	const ENGINE_EXPN_CARD
-	const ENGINE_POKEGEAR
+	const ENGINE_RADIO_CARD ; $00
+	const ENGINE_MAP_CARD   ; $01
+	const ENGINE_PHONE_CARD ; $02
+	const ENGINE_EXPN_CARD  ; $03
+	const ENGINE_POKEGEAR   ; $04
 ; wDayCareMan
 	const ENGINE_DAY_CARE_MAN_HAS_EGG
 	const ENGINE_DAY_CARE_MAN_HAS_MON

@@ -485,6 +485,7 @@ PokegearClock_Joypad:
 	jr .done
 
 .no_map_card
+        ;; here's code that checks if you have particular cards
 	ld a, [wPokegearFlags]
 	bit POKEGEAR_PHONE_CARD_F, a
 	jr z, .no_phone_card

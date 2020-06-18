@@ -1093,3 +1093,9 @@ ENDM
 goldenrodmart5f: MACRO
 	db goldenrodmart5f_command
 ENDM
+
+	enum giveitem_or_setflag_command
+giveitem_or_setflag: macro
+	db giveitem_or_setflag_command
+	db \1 ; item or flag
+	endm
