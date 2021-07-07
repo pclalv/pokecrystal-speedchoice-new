@@ -10,7 +10,7 @@ ViridianGym_MapScripts:
 ViridianGymBlueScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_EARTHBADGE
+	checkevent EVENT_BEAT_BLUE
 	iftrue .FightDone
 	writetext LeaderBlueBeforeText
 	waitbutton
@@ -21,12 +21,7 @@ ViridianGymBlueScript:
 	reloadmapafterbattle
 	setevent EVENT_BEAT_BLUE
 	opentext
-	writetext Text_ReceivedEarthBadge
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_EARTHBADGE
-	checkcode VAR_BADGES
-	scall ViridianGymActivateRockets
+	verbosesetflag ENGINE_EARTHBADGE
 	writetext LeaderBlueAfterText
 	waitbutton
 	closetext

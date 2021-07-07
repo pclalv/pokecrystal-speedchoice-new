@@ -8,6 +8,12 @@ TinTowerRoof_MapScripts:
 	callback MAPCALLBACK_OBJECTS, .HoOh
 
 .HoOh:
+	checkitemrando
+	iffalse .NoE4Check
+	checkevent EVENT_BEAT_ELITE_FOUR
+	iffalse .NoAppear
+
+.NoE4Check:
 	checkevent EVENT_FOUGHT_HO_OH
 	iftrue .NoAppear
 	checkitem RAINBOW_WING

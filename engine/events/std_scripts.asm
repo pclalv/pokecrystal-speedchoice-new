@@ -296,16 +296,21 @@ GoldenrodRocketsScript:
 
 RadioTowerRocketsScript:
 	checkpermaoptions ROCKETLESS
-	iftrue SeventhBadgeRocketlessScript
+	iftrue .done
 	setflag ENGINE_ROCKETS_IN_RADIO_TOWER
 	setevent EVENT_GOLDENROD_CITY_CIVILIANS
 	setevent EVENT_RADIO_TOWER_BLACKBELT_BLOCKS_STAIRS
 	clearevent EVENT_RADIO_TOWER_ROCKET_TAKEOVER
+	clearevent EVENT_BASEMENT_DIRECTOR
 	clearevent EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER
 	setevent EVENT_MAHOGANY_TOWN_POKEFAN_M_BLOCKS_EAST
 	specialphonecall SPECIALCALL_WEIRDBROADCAST
 	setmapscene MAHOGANY_TOWN, SCENE_FINISHED
-SeventhBadgeRocketlessScript:
+	checkitemrando
+	iftrue .done
+	clearevent EVENT_FLOWER_SHOP_ROCKET
+	setevent EVENT_RADIO_CARD_WOMAN
+.done:
 	end
 
 BugContestResultsWarpScript:
@@ -483,6 +488,7 @@ BugContestResults_CopyContestantsToResults:
 InitializeEventsScript:
 	setevent EVENT_EARLS_ACADEMY_EARL
 	setevent EVENT_RADIO_TOWER_ROCKET_TAKEOVER
+	setevent EVENT_FLOWER_SHOP_ROCKET
 	setevent EVENT_GOLDENROD_CITY_ROCKET_TAKEOVER
 	setevent EVENT_RADIO_TOWER_CIVILIANS_AFTER
 	setevent EVENT_ILEX_FOREST_APPRENTICE
@@ -616,6 +622,11 @@ InitializeEventsScript:
 	setevent EVENT_MT_MOON_SQUARE_CLEFAIRY
 	setevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
+	checkitemrando
+	iftrue .SkipDirector
+	setevent EVENT_BASEMENT_DIRECTOR
+
+.SkipDirector:
 	setevent EVENT_INITIALIZED_EVENTS
 	return
 

@@ -50,17 +50,10 @@ GoldenrodGymWhitneyScript:
 .StoppedCrying:
 	checkevent EVENT_GOT_TM45_ATTRACT
 	iftrue .GotAttract
-	checkflag ENGINE_PLAINBADGE
-	iftrue .GotPlainBadge
 	writetext WhitneyWhatDoYouWantText
 	promptbutton
 	waitsfx
-	writetext PlayerReceivedPlainBadgeText
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_PLAINBADGE
-	readvar VAR_BADGES
-	scall GoldenrodGymActivateRockets
+	verbosesetflag ENGINE_PLAINBADGE
 .GotPlainBadge:
 	writetext WhitneyPlainBadgeText
 	promptbutton

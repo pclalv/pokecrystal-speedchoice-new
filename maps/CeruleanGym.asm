@@ -54,12 +54,13 @@ CeruleanGym_MapScripts:
 	pause 15
 	turnobject PLAYER, DOWN
 	pause 15
+	clearevent EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
 	end
 
 CeruleanGymMistyScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_CASCADEBADGE
+	checkevent EVENT_BEAT_MISTY
 	iftrue .FightDone
 	writetext MistyIntroText
 	waitbutton
@@ -73,12 +74,7 @@ CeruleanGymMistyScript:
 	setevent EVENT_BEAT_SWIMMERF_BRIANA
 	setevent EVENT_BEAT_SWIMMERM_PARKER
 	opentext
-	writetext ReceivedCascadeBadgeText
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_CASCADEBADGE
-	checkcode VAR_BADGES
-	scall CeruleanGymActivateRockets
+	verbosesetflag ENGINE_CASCADEBADGE
 .FightDone:
 	writetext MistyFightDoneText
 	waitbutton

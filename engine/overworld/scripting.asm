@@ -238,7 +238,10 @@ ScriptCommandTable:
 	dw Script_increment2bytestat         ; ac
 	dw Script_increment4bytestat         ; ad
 	dw Script_goldenrodmart5f            ; ae
-	dw Script_keyrandogiveitemorsetengineflag ; af
+	dw Script_verbosesetflag             ; af
+	dw Script_checkitemrando             ; b0
+	dw Script_verbosegiveprogressiverod  ; b1
+	dw Script_engineflagsound            ; b2
 
 StartScript:
 	ld hl, wScriptFlags
@@ -509,6 +512,8 @@ Script_verbosegiveitem:
 ; parameters: item, quantity
 
 	call Script_giveitem
+
+Script_verbosegiveitem_aftergive:
 	call CurItemName
 	ld de, wStringBuffer1
 	ld a, STRING_BUFFER_4
@@ -2050,6 +2055,8 @@ Script_giveitem:
 	ld [wCurItem], a
 	call GetScriptByte
 	ld [wItemQuantityChangeBuffer], a
+
+Script_giveitem_loaded:
 	ld hl, wNumItems
 	call ReceiveItem
 	jr nc, .full
@@ -2934,62 +2941,22 @@ Script_goldenrodmart5f:
 	farcall OpenMartDialog
 	ret
 
-Script_keyrandogiveitemorsetengineflag:
+Script_verbosesetflag:
 ; script command 0xaf
-; parameters: type, index
-; type is 0 = engine flag / 1 = item / 2 = verbose engine flag / 3 = verbose item
-; quantity for item is always 1
-	call GetScriptByte
-	dec a
-	jr z, .item
-	dec a
-	jr z, .verboseFlag
-	dec a
-	jr z, .verboseItem
-; engine flag
-	call GetScriptByte
-	ld e, a
-	ld d, 0
-	ld b, SET_FLAG
-	jp _EngineFlagAction
-.item
-	call GetScriptByte
-	cp ITEM_FROM_MEM
-	jr nz, .ok
-	ld a, [wScriptVar]
-.ok
-	ld [wCurItem], a
-	ld a, 1
-	ld [wItemQuantityChangeBuffer], a
-	ld hl, wNumItems
-	call ReceiveItem
-	jr nc, .full
-	ld a, TRUE
-	ld [wScriptVar], a
-	ret
-.full
-	xor a
-	ld [wScriptVar], a
-	ret
-.verboseItem
-	call .item
-	call CurItemName
-	ld de, wStringBuffer1
-	ld a, STRING_BUFFER_4
-	call CopyConvertedText
-	ld b, BANK(GiveItemScript)
-	ld de, GiveItemScript
-	jp ScriptCall
+; parameters: bit_number
+; high byte is dropped since it's useless
 .verboseFlag
 	ld a, [wEngineFlagPickupFlagID]
 	push af
 	call GetScriptByte
 	ld [wEngineFlagPickupFlagID], a
+	ld [wScriptVar], a
 	ld e, a
 	ld d, 0
 	ld b, SET_FLAG
 	call _EngineFlagAction
 	farcall GetEngineFlagName
+	call GetScriptByte
 	pop af
 	ld [wEngineFlagPickupFlagID], a
 	ld b, BANK(GiveEngineFlagScript)
@@ -2998,11 +2965,71 @@ Script_keyrandogiveitemorsetengineflag:
 
 GiveEngineFlagScript:
 	writetext ReceivedEngineFlagText
-	waitsfx
-	specialsound
+	engineflagsound
 	waitbutton
 	end
 
 ReceivedEngineFlagText:
 	text_far _ReceivedEngineFlagText
 	text_end
+
+Script_checkitemrando:
+; script command 0xb0
+	ld a, BANK(ItemRandoActive)
+	ld hl, ItemRandoActive
+	call GetFarByte
+	ld [wScriptVar], a
+	ret
+
+Script_verbosegiveprogressiverod:
+; script command 0xb1
+	ld a, OLD_ROD
+	ld [wCurItem], a
+	ld hl, wNumItems
+	call CheckItem
+	ld a, OLD_ROD
+	jr nc, .picked
+	ld a, GOOD_ROD
+	ld [wCurItem], a
+	ld hl, wNumItems
+	call CheckItem
+	ld a, GOOD_ROD
+	jr nc, .picked
+	ld a, SUPER_ROD
+
+.picked
+	ld [wCurItem], a
+	ld a, 1
+	ld [wItemQuantityChangeBuffer], a
+	call Script_giveitem_loaded
+	jp Script_verbosegiveitem_aftergive
+
+Script_engineflagsound:
+; script command 0xb2
+	ld a, [wScriptVar]
+	cp ENGINE_ZEPHYRBADGE
+	jr c, .notBadge
+	cp ENGINE_EARTHBADGE + 1
+	jr nc, .notBadge
+	ld de, SFX_GET_BADGE
+	call PlaySFX
+	call WaitSFX
+	ld b, BANK(ActivateRocketsScript)
+	ld de, ActivateRocketsScript
+	jp ScriptCall
+.notBadge
+	ld de, SFX_RB_GET_ITEM
+	call PlaySFX
+	jp WaitSFX
+
+ActivateRocketsScript:
+	readvar VAR_BADGES
+	ifequal 7, .RadioTowerRockets
+	ifequal 6, .GoldenrodRockets
+	end
+
+.GoldenrodRockets:
+	jumpstd GoldenrodRocketsScript
+
+.RadioTowerRockets:
+	jumpstd RadioTowerRocketsScript

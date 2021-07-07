@@ -99,6 +99,11 @@ ElmCheckMasterBall:
 	checkflag ENGINE_RISINGBADGE
 	iftrue ElmGiveMasterBallScript
 ElmCheckEverstone:
+	checkscene
+	ifequal SCENE_ELMSLAB_AIDE_GIVES_POTION, ElmDescribesMrPokemonScript
+	ifequal SCENE_ELMSLAB_CANT_LEAVE, DidntChooseStarterScript
+	checkitem MYSTERY_EGG
+	iftrue ElmAfterTheftScript
 	checkevent EVENT_GOT_EVERSTONE_FROM_ELM
 	iftrue ElmScript_CallYou
 	checkevent EVENT_SHOWED_TOGEPI_TO_ELM

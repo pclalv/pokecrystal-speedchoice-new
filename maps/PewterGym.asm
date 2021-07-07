@@ -11,7 +11,7 @@ PewterGym_MapScripts:
 PewterGymBrockScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_BOULDERBADGE
+	checkevent EVENT_BEAT_BROCK
 	iftrue .FightDone
 	writetext BrockIntroText
 	waitbutton
@@ -23,12 +23,7 @@ PewterGymBrockScript:
 	setevent EVENT_BEAT_BROCK
 	setevent EVENT_BEAT_CAMPER_JERRY
 	opentext
-	writetext ReceivedBoulderBadgeText
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_BOULDERBADGE
-	checkcode VAR_BADGES
-	scall PewterGymActivateRockets
+	verbosesetflag ENGINE_BOULDERBADGE
 	writetext BrockBoulderBadgeText
 	waitbutton
 	closetext

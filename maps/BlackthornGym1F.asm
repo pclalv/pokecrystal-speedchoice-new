@@ -29,8 +29,6 @@ BlackthornGym1F_MapScripts:
 BlackthornGymClairScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_RISINGBADGE
-	iftrue .AlreadyGotBadge
 	checkevent EVENT_BEAT_CLAIR
 	iftrue .FightDone
 	writetext ClairIntroText
@@ -50,18 +48,24 @@ BlackthornGymClairScript:
 	clearevent EVENT_MAHOGANY_MART_OWNERS
 	setevent EVENT_BLACKTHORN_CITY_GRAMPS_BLOCKS_DRAGONS_DEN
 	clearevent EVENT_BLACKTHORN_CITY_GRAMPS_NOT_BLOCKING_DRAGONS_DEN
+	checkpermaoptions EASY_CLAIR_BADGE
+	iffalse .DoDDen
 	writetext ClairText_Lazy
 	waitsfx
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_RISINGBADGE
-	checkcode VAR_BADGES
-	scall BlackthornGymActivateRockets
+	verbosesetflag ENGINE_RISINGBADGE
 	specialphonecall SPECIALCALL_MASTERBALL
 	writetext BlackthornGymClairText_DescribeBadge
 	jump .GiveTM
 
+.DoDDen:
+	writetext ClairText_GoToDragonsDen
+	waitbutton
+	closetext
+	end
+
 .FightDone:
+	checkevent EVENT_GOT_TM24_DRAGONBREATH
+	iffalse .AlreadyGotBadge
 	writetext ClairText_TooMuchToExpect
 	waitbutton
 	closetext
@@ -71,15 +75,11 @@ BlackthornGymClairScript:
 	checkevent EVENT_GOT_TM24_DRAGONBREATH
 	iftrue .GotTM24
 	writetext BlackthornGymClairText_YouKeptMeWaiting
-.GiveTM
+
+.GiveTM:
 	promptbutton
-	giveitem TM_DRAGONBREATH
+	verbosegiveitem TM_DRAGONBREATH
 	iffalse .BagFull
-	getitemname STRING_BUFFER_3, TM_DRAGONBREATH
-	writetext BlackthornGymText_ReceivedTM24
-	playsound SFX_ITEM
-	waitsfx
-	itemnotify
 	setevent EVENT_GOT_TM24_DRAGONBREATH
 	writetext BlackthornGymClairText_DescribeTM24
 	promptbutton
@@ -260,9 +260,6 @@ ClairText_Lazy:
 	para "This is the"
 	line "RISINGBADGE."
 	cont "Just take it."
-
-	para "<PLAYER> received"
-	line "RISINGBADGE."
 	done
 
 BlackthornGymClairText_DescribeBadge:

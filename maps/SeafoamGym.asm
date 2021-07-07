@@ -14,7 +14,7 @@ SeafoamGym_MapScripts:
 SeafoamGymBlaineScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_VOLCANOBADGE
+	checkevent EVENT_BEAT_BLAINE
 	iftrue .FightDone
 	writetext BlaineIntroText
 	waitbutton
@@ -28,12 +28,7 @@ SeafoamGymBlaineScript:
 	reloadmapafterbattle
 	setevent EVENT_BEAT_BLAINE
 	opentext
-	writetext ReceivedVolcanoBadgeText
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_VOLCANOBADGE
-	checkcode VAR_BADGES
-	scall SeafoamGymActivateRockets
+	verbosesetflag ENGINE_VOLCANOBADGE
 	writetext BlaineAfterBattleText
 	waitbutton
 	closetext

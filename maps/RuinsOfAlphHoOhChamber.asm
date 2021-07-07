@@ -7,7 +7,15 @@ RuinsOfAlphHoOhChamber_MapScripts:
 	callback MAPCALLBACK_TILES, .HiddenDoors
 
 .CheckWall:
+	checkitemrando
+	iftrue .ItemRando
 	special HoOhChamber
+	sjump .CheckOpen
+.ItemRando:
+	checkevent EVENT_FOUGHT_HO_OH
+	iffalse .CheckOpen
+	setevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
+.CheckOpen:
 	checkevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
 	iftrue .OpenWall
 	end
@@ -80,14 +88,19 @@ RuinsOfAlphHoOhChamberDescriptionSign:
 	jumptext RuinsOfAlphHoOhChamberDescriptionText
 
 RuinsOfAlphHoOhChamberWallPatternLeft:
+	; Note: This is added because somehow its possible for the door to close and never reopen
+	checkevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
+	iftrue RuinsOfAlphHoOhChamberWallPatternRight.WallOpen
 	opentext
 	writetext RuinsOfAlphHoOhChamberWallPatternLeftText
 	setval UNOWNWORDS_HO_OH
 	special DisplayUnownWords
 	closetext
+	setscene SCENE_DEFAULT
 	end
 
 RuinsOfAlphHoOhChamberWallPatternRight:
+	; Note: This is added because somehow its possible for the door to close and never reopen
 	checkevent EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
 	iftrue .WallOpen
 	opentext
@@ -95,6 +108,7 @@ RuinsOfAlphHoOhChamberWallPatternRight:
 	setval UNOWNWORDS_HO_OH
 	special DisplayUnownWords
 	closetext
+	setscene SCENE_DEFAULT
 	end
 
 .WallOpen:

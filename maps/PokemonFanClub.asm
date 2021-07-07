@@ -66,6 +66,8 @@ PokemonFanClubClefairyGuyScript:
 
 .FoundClefairyDoll:
 	writetext PokemonFanClubClefairyGuyMakingDoWithADollIFoundText
+	checkitemrando
+	iftrue .MetCopycat
 	checkevent EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
 	iftrue .MetCopycat
 	waitbutton
@@ -77,13 +79,9 @@ PokemonFanClubClefairyGuyScript:
 	writetext PokemonFanClubClefairyGuyTakeThisDollBackToGirlText
 	promptbutton
 	waitsfx
-	giveitem LOST_ITEM
+	verbosegiveitem LOST_ITEM
 	iffalse .NoRoom
 	disappear POKEMONFANCLUB_FAIRY
-	writetext PokemonFanClubPlayerReceivedDollText
-	playsound SFX_KEY_ITEM
-	waitsfx
-	itemnotify
 	setevent EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB
 	closetext
 	end

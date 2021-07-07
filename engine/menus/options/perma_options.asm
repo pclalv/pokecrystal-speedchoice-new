@@ -35,13 +35,13 @@ ENDM
 
 PermaOptionsPresets:
 	; Vanilla
-	permaoptionspreset Preset_VanillaName, 0, RACEGOAL_RED << RACEGOAL, 0
+	permaoptionspreset Preset_VanillaName, 0, RACEGOAL_RED << RACEGOAL, 0, 0
 	; Bingo
-	permaoptionspreset Preset_BingoName, ROCKETLESS_VAL | (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EASY_TIN_TOWER_VAL, 0
+	permaoptionspreset Preset_BingoName, ROCKETLESS_VAL | (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EASY_TIN_TOWER_VAL, EASY_CLAIR_BADGE_VAL, 0
 	; 251
-	permaoptionspreset Preset_CEAName, ROCKETLESS_VAL | (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EASY_TIN_TOWER_VAL | (RACEGOAL_RED << RACEGOAL), 0
+	permaoptionspreset Preset_CEAName, ROCKETLESS_VAL | (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EASY_TIN_TOWER_VAL | (RACEGOAL_RED << RACEGOAL), EASY_CLAIR_BADGE_VAL, 0
 	; KIR
-	permaoptionspreset Preset_KIRName, (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EVOLVED_EARLY_WILDS_VAL | (RACEGOAL_RED << RACEGOAL), 0
+	permaoptionspreset Preset_KIRName, (SPINNERS_NONE << SPINNERS) | BETTER_ENC_SLOTS_VAL | (EXP_FORMULA_BLACKWHITE << EXP_FORMULA), BETTER_MARTS_VAL | EVOLVED_EARLY_WILDS_VAL | (RACEGOAL_RED << RACEGOAL), EASY_CLAIR_BADGE_VAL, EARLY_KANTO_DEX_VAL
 PermaOptionsPresetsEnd:
 
 Preset_VanillaName:
@@ -51,7 +51,7 @@ Preset_BingoName:
 Preset_CEAName:
 	db "251 RACE@"
 Preset_KIRName:
-	db "KEYITEM @"
+	db "ITEMRAND@"
 
 Options_Preset::
 	ld hl, wOptionsMenuPreset
@@ -73,6 +73,7 @@ Options_Preset::
 	inc de
 	dec b
 	jr nz, .setloop
+	call EnforceItemRandoOptions
 	ld de, SFX_TRANSACTION
 	call PlaySFX
 	call WaitSFX
@@ -158,7 +159,7 @@ Options_Rocketless:
 	ld hl, ROCKETLESS_ADDRESS
 	lb bc, ROCKETLESS, 9
 	ld de, .NormalPurge
-	jp Options_TrueFalse
+	jp Options_TrueFalse_IRLocked
 .NormalPurge
 	dw .Normal
 	dw .Purge

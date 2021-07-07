@@ -91,6 +91,7 @@ RETVAR_EXECUTE EQU (2 << 6)
 	const PLAYEREVENT_HATCH
 	const PLAYEREVENT_JOYCHANGEFACING
 	const PLAYEREVENT_ENGINEFLAGBALL
+	const PLAYEREVENT_PROGRESSIVERODBALL
 NUM_PLAYER_EVENTS EQU const_value
 
 ; PlayerMovement.pointers indexes (see engine/overworld/events.asm)
@@ -125,6 +126,7 @@ OBJECT_EVENT_SIZE EQU 13 ; object_event
 	const BGEVENT_ITEM
 	const BGEVENT_COPY
 	const BGEVENT_ENGINEFLAG
+	const BGEVENT_PROGRESSIVEROD
 
 ; object_event types
 ; TryObjectEvent arguments (see engine/overworld/events.asm)
@@ -133,7 +135,7 @@ OBJECT_EVENT_SIZE EQU 13 ; object_event
 	const OBJECTTYPE_ITEMBALL
 	const OBJECTTYPE_TRAINER
 	const OBJECTTYPE_ENGINEFLAGBALL
-	const OBJECTTYPE_4
+	const OBJECTTYPE_PROGRESSIVERODBALL
 	const OBJECTTYPE_5
 	const OBJECTTYPE_6
 
@@ -306,9 +308,8 @@ NUM_UNOWN_PUZZLES EQU const_value
 	const MOVETUTOR_THUNDERBOLT  ; 2
 	const MOVETUTOR_ICE_BEAM     ; 3
 
-; keyrandogiveitemorsetengineflag values for first argument
+; Change Box Call results
 	const_def
-	const KRGIVE_ENGINEFLAG        ; 0
-	const KRGIVE_KEYITEM           ; 1
-	const KRGIVE_VERBOSEENGINEFLAG ; 2
-	const KRGIVE_VERBOSEKEYITEM    ; 3
+	const CHANGEBOXCALL_DONE
+	const CHANGEBOXCALL_CANCELLED
+	const CHANGEBOXCALL_ALLFULL

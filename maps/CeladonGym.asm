@@ -14,7 +14,7 @@ CeladonGym_MapScripts:
 CeladonGymErikaScript:
 	faceplayer
 	opentext
-	checkflag ENGINE_RAINBOWBADGE
+	checkevent EVENT_BEAT_ERIKA
 	iftrue .FightDone
 	writetext ErikaBeforeBattleText
 	waitbutton
@@ -29,12 +29,7 @@ CeladonGymErikaScript:
 	setevent EVENT_BEAT_BEAUTY_JULIA
 	setevent EVENT_BEAT_TWINS_JO_AND_ZOE
 	opentext
-	writetext PlayerReceivedRainbowBadgeText
-	playsound SFX_GET_BADGE
-	waitsfx
-	setflag ENGINE_RAINBOWBADGE
-	checkcode VAR_BADGES
-	scall CeladonGymActivateRockets
+	verbosesetflag ENGINE_RAINBOWBADGE
 .FightDone:
 	checkevent EVENT_GOT_TM19_GIGA_DRAIN
 	iftrue .GotGigaDrain
